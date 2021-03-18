@@ -7,6 +7,7 @@ public class WeatherObservations {
 	public List<WeatherNotice> notice;
     public List<WeatherHeader> header;
     public List<WeatherData> data;
+    
 	public List<WeatherNotice> getNotice() {
 		return notice;
 	}

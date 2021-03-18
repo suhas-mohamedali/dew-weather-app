@@ -1,6 +1,7 @@
 package com.dew.weatherapp.controllers;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.validation.constraints.NotNull;
 
@@ -17,6 +18,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.dew.weatherapp.model.Weather;
 import com.dew.weatherapp.model.WeatherData;
+import com.dew.weatherapp.model.weatherdto.WeatherDataDto;
+import com.dew.weatherapp.model.weatherdto.WeatherDataType;
+import com.dew.weatherapp.model.weatherdto.WeatherTestDto;
+import com.dew.weatherapp.util.WeatherDataTypeFactory;
 
 @RestController
 public class WeatherAppController {
@@ -36,23 +41,47 @@ public class WeatherAppController {
 	@GetMapping(value = "/weather/{wmoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public List<WeatherData> retrieveAllWeatherData(@PathVariable @NotNull final String wmoId )  throws HttpClientErrorException{
-		
+	//public List<WeatherDataDto> retrieveAllWeatherData(@PathVariable @NotNull final String wmoId )  throws HttpClientErrorException{
 		StringBuilder sbURL = new StringBuilder(BOM_URL);
 		sbURL.append(wmoId);
 		sbURL.append(JSON_EXT);
 		
 		
 		ResponseEntity<Weather> resp = restTemplate.getForEntity(sbURL.toString(), Weather.class);
+		
+		
+		//ResponseEntity<WeatherTestDto> resp = restTemplate.getForEntity(sbURL.toString(), WeatherTestDto.class);
+		
 		Weather obj = resp.getBody();
+		
+		//WeatherTestDto obj = resp.getBody();
 		
 		return obj.getObservations().getData();
 	}
 	
 	@GetMapping(value = "/weatherdata/{wmoId}/{weatherDataType}")
-	
-	public List retrieveWeatherDataType(@PathVariable @NotNull final String wmoId, @PathVariable @NotNull final String weatherDataType) {
+	@ResponseBody
+	public List<WeatherDataType> retrieveWeatherDataType(@PathVariable @NotNull final String wmoId, @PathVariable @NotNull final String weatherDataType) {
 		
+		StringBuilder sbURL = new StringBuilder(BOM_URL);
+		sbURL.append(wmoId);
+		sbURL.append(JSON_EXT);
 		
+		ResponseEntity<Weather> resp = restTemplate.getForEntity(sbURL.toString(), Weather.class);
+		Weather obj = resp.getBody();
+		
+		List <WeatherData> lstWeatherData = obj.getObservations().getData();
+		
+	//	List<WeatherDataDto> lstTest = lstWeatherData.stream().filter(wthr -> wthr.)
+		
+		lstWeatherData.forEach( wthrData -> {
+			
+			
+			
+		});
+		
+		Supplier<WeatherDataTypeFactory> weatherDataTypeFactory = WeatherDataTypeFactory :: new;
+		weatherDataTypeFactory.get().getWeatherDataType(weatherDataType);
 		
 		return null;
 	}
