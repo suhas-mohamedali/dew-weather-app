@@ -13,21 +13,21 @@ class DateUtilTest {
 
 	@Test
 	void test() {
-		
-		String strDate =
-				  "20210322000000";
-				 
-				 Date ss = new Date();
-				try {
-					ss = Util.dateFromString(strDate);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				 
-				 System.out.println(ss);
-				 
-		fail("Not yet implemented");
+
+		String strDate = "20210322000000";
+
+		Date ss = new Date();
+		try {
+			ss = Util.dateFromString(strDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		@SuppressWarnings("deprecation")
+		int date = ss.getDate();
+
+		assertEquals(date, 22);
 	}
 
 }

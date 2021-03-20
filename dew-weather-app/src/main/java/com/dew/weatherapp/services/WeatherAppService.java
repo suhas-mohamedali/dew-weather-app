@@ -19,6 +19,7 @@ import com.dew.weatherapp.util.WeatherDataTypeFactory;
 @Service
 public class WeatherAppService {
 
+	private static final String PARSING_DATE_ERROR = "Parsing date error";
 	private static final String BOM_URL = "http://www.bom.gov.au/fwo/IDS60901/IDS60901.";
 	private static final String JSON_EXT = ".json";
 
@@ -59,7 +60,7 @@ public class WeatherAppService {
 			try {
 				return weatherDataTypeFactory.get().getWeatherDataType(weatherDataType, weatherData);
 			} catch (ParseException e) {
-				new Exception("Parsing date error");
+				new Exception(PARSING_DATE_ERROR);
 			}
 			return null;
 		}).collect(Collectors.toList());
