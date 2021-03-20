@@ -1,15 +1,9 @@
 package com.dew.weatherapp;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.text.ParseException;
-import java.util.Date;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
 
-import com.dew.weatherapp.model.weatherdto.WeatherDataType;
-import com.dew.weatherapp.util.Util;
 import com.dew.weatherapp.util.WeatherDataTypeFactory;
 
 class WeatherDataUtilTest {

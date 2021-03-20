@@ -1,115 +1,39 @@
 package com.dew.weatherapp.controllers;
 
-import java.text.ParseException;
 import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
-import com.dew.weatherapp.model.Weather;
 import com.dew.weatherapp.model.WeatherData;
-import com.dew.weatherapp.model.weatherdto.Temperature;
-import com.dew.weatherapp.model.weatherdto.WeatherDataDto;
 import com.dew.weatherapp.model.weatherdto.WeatherDataType;
-import com.dew.weatherapp.model.weatherdto.WeatherTestDto;
-import com.dew.weatherapp.util.WeatherDataTypeFactory;
+import com.dew.weatherapp.services.WeatherAppService;
 
 @RestController
 public class WeatherAppController {
 
-	private static final String BOM_URL = "http://www.bom.gov.au/fwo/IDS60901/IDS60901.";
-	private static final String JSON_EXT = ".json";
-
-	private RestTemplate restTemplate;
-
 	@Autowired
-	public WeatherAppController(RestTemplateBuilder builder) {
-		this.restTemplate = builder.build();
-	}
+	private WeatherAppService weatherAppService;
 
 	@GetMapping(value = "/weather/{wmoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public List<WeatherData> retrieveAllWeatherData(@PathVariable @NotNull final String wmoId)
-			throws HttpClientErrorException {
-		// public List<WeatherDataDto> retrieveAllWeatherData(@PathVariable @NotNull
-		// final String wmoId ) throws HttpClientErrorException{
-		StringBuilder sbURL = new StringBuilder(BOM_URL);
-		sbURL.append(wmoId);
-		sbURL.append(JSON_EXT);
+	public List<WeatherData> retrieveAllWeatherData(@PathVariable @NotNull final String wmoId) throws Exception {
 
-		ResponseEntity<Weather> resp = restTemplate.getForEntity(sbURL.toString(), Weather.class);
-
-		// ResponseEntity<WeatherTestDto> resp =
-		// restTemplate.getForEntity(sbURL.toString(), WeatherTestDto.class);
-
-		Weather obj = resp.getBody();
-
-		// WeatherTestDto obj = resp.getBody();
-
-		return obj.getObservations().getData();
+		return weatherAppService.fetchAllWeatherDetailsOfTheLocation(wmoId);
 	}
 
-	@GetMapping(value = "/weatherdata/{wmoId}/{weatherDataType}")
+	@GetMapping(value = "/weatherdata/{wmoId}/{weatherDataType}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public List<WeatherDataType> retrieveWeatherDataType(@PathVariable @NotNull final String wmoId,
-			@PathVariable @NotNull final String weatherDataType)  {
+			@PathVariable @NotNull final String weatherDataType) {
 
-		StringBuilder sbURL = new StringBuilder(BOM_URL);
-		sbURL.append(wmoId);
-		sbURL.append(JSON_EXT);
-
-		ResponseEntity<Weather> resp = restTemplate.getForEntity(sbURL.toString(), Weather.class);
-		Weather obj = resp.getBody();
-
-		List<WeatherData> lstWeatherData = obj.getObservations().getData();
-
-		// List<WeatherDataDto> lstTest = lstWeatherData.stream().filter(wthr -> wthr.)
-
-		List<WeatherDataType> lstWthr = lstWeatherData.stream().map(weatherData -> {
-
-			/*
-			 * Temperature tempObj = new Temperature();
-			 * tempObj.setAir_temp(temp.getAir_temp());
-			 * temp.setApparent_t(temp.getApparent_t());
-			 */
-
-			Supplier<WeatherDataTypeFactory> weatherDataTypeFactory = WeatherDataTypeFactory::new;
-			// weatherDataTypeFactory.get().getWeatherDataType(weatherDataType);
-
-			try {
-				return weatherDataTypeFactory.get().getWeatherDataType(weatherDataType, weatherData);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		}).collect(Collectors.toList());
-
-		// lstWeatherData.forEach( wthrData -> {
-
-		// });
-
-		/*
-		 * Supplier<WeatherDataTypeFactory> weatherDataTypeFactory =
-		 * WeatherDataTypeFactory :: new;
-		 * weatherDataTypeFactory.get().getWeatherDataType(weatherDataType);
-		 */
-
-		return lstWthr;
+		return weatherAppService.fetchCustomWeatherDataOfTheLocation(wmoId, weatherDataType);
 	}
-
-	// System.out.println(obj.getObservations().getData());
 
 }
