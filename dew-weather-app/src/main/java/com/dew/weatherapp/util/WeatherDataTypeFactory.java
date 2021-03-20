@@ -15,14 +15,19 @@ import com.dew.weatherapp.model.weatherdto.Wind;
 
 public class WeatherDataTypeFactory {
 
+	private static final String WIND = "wind";
+	private static final String PRESSURE = "pressure";
+	private static final String RAIN = "rain";
+	private static final String HUMID = "humid";
+	private static final String TEMP = "temp";
 	final static Map<String, Supplier<WeatherDataType>> map = new HashMap<>();
 
 	static {
-		map.put("temp", Temperature::new);
-		map.put("humid", Humidity::new);
-		map.put("rain", Rain::new);
-		map.put("pressure", Pressure::new);
-		map.put("wind", Wind::new);
+		map.put(TEMP, Temperature::new);
+		map.put(HUMID, Humidity::new);
+		map.put(RAIN, Rain::new);
+		map.put(PRESSURE, Pressure::new);
+		map.put(WIND, Wind::new);
 	}
 
 	public WeatherDataType getWeatherDataType(String weatherDataType, WeatherData weatherData) throws ParseException {
@@ -30,7 +35,7 @@ public class WeatherDataTypeFactory {
 		Supplier<WeatherDataType> weatherType = map.get(weatherDataType.toLowerCase());
 
 		if (weatherType != null) {
-			if (weatherDataType.equalsIgnoreCase("temp")) {
+			if (weatherDataType.equalsIgnoreCase(TEMP)) {
 				Temperature temperature = (Temperature) weatherType.get();
 				temperature.setWmo(weatherData.getWmo());
 				temperature.setLocationName(weatherData.getName());
@@ -41,7 +46,7 @@ public class WeatherDataTypeFactory {
 				temperature.setDewpt_temp(weatherData.getDewpt());
 				return temperature;
 			}
-			if (weatherDataType.equalsIgnoreCase("humid")) {
+			if (weatherDataType.equalsIgnoreCase(HUMID)) {
 				Humidity humidity = (Humidity) weatherType.get();
 				humidity.setWmo(weatherData.getWmo());
 				humidity.setLocationName(weatherData.getName());
@@ -49,7 +54,7 @@ public class WeatherDataTypeFactory {
 				humidity.setRel_hum(weatherData.getRel_hum());				
 				return humidity;
 			}
-			if (weatherDataType.equalsIgnoreCase("rain")) {
+			if (weatherDataType.equalsIgnoreCase(RAIN)) {
 				Rain rain = (Rain) weatherType.get();
 				rain.setWmo(weatherData.getWmo());
 				rain.setLocationName(weatherData.getName());
@@ -57,7 +62,7 @@ public class WeatherDataTypeFactory {
 				rain.setRain_trace(weatherData.getRain_trace());
 				return rain;
 			}
-			if (weatherDataType.equalsIgnoreCase("pressure")) {
+			if (weatherDataType.equalsIgnoreCase(PRESSURE)) {
 				Pressure pressure = (Pressure) weatherType.get();
 				pressure.setWmo(weatherData.getWmo());
 				pressure.setLocationName(weatherData.getName());
@@ -66,7 +71,7 @@ public class WeatherDataTypeFactory {
 				pressure.setPress_qnh(weatherData.getPress_qnh());
 				return pressure;
 			}
-			if (weatherDataType.equalsIgnoreCase("wind")) {
+			if (weatherDataType.equalsIgnoreCase(WIND)) {
 				Wind wind = (Wind) weatherType.get();
 				wind.setWmo(weatherData.getWmo());
 				wind.setLocationName(weatherData.getName());
